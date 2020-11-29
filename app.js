@@ -19,6 +19,7 @@ var storage = multer.diskStorage({
         cb(null,file.originalname)
     }
 })
+
 var upload = multer({storage:storage})
 
 var app = express();
@@ -33,9 +34,13 @@ mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: t
 .then(console.log('connected to games-db'))
 .catch(error => console.log(`[Error]: ${error}` ));
 
-
+/*
 app.set('views',path.resolve(__dirname,'views'));
-app.set('view engine','ejs');
+app.set('view engine','ejs');*/
+
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jsx');
+app.engine('jsx', require('express-react-views').createEngine());
 
 var pathh = path.resolve(__dirname,'public');
 app.use(express.static(pathh));
@@ -69,6 +74,7 @@ app.post('/',upload.single('pic'),(req,res)=>{
         }
         res.redirect('/')
     })
+    
 })
 
 //Descargar archivos
@@ -82,8 +88,8 @@ app.get('/download/:id',(req,res)=>{
              res.download(x)
          }
     })
+    
 })
-
 
 var port  = process.env.PORT || 3000 ;
 app.listen(port,()=>console.log('Server running at port http://localhost:'+port))
